@@ -1,0 +1,44 @@
+@model CatalogoModel
+
+@{
+    ViewData["Title"] = "Historias";
+}
+
+<h1>Historias publicadas</h1>
+
+<form asp-action="Index" method="get" class="mb-3">
+    <label asp-for="CategoriaId" class="form-label">Categoría</label>
+    <select asp-for="CategoriaId" asp-items="@(new SelectList(Model.Categorias, nameof(CategoriaModel.Id), nameof(CategoriaModel.Nombre)))" class="form-select mb-2">
+        <option value="">Todas las categorías</option>
+    </select>
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+</form>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger" role="alert">@ViewBag.Error</div>
+}
+
+@if (ViewBag.Mensaje != null)
+{
+    <div class="alert alert-info" role="status">@ViewBag.Mensaje</div>
+}
+
+@foreach (var historia in Model.Historias)
+{
+    <article class="card mb-3">
+        <div class="card-body">
+            <h2 class="h5 card-title">@historia.Titulo</h2>
+            <p class="card-text">@historia.Sinopsis</p>
+            <form asp-action="Iniciar" method="post">
+                <input type="hidden" name="historiaId" value="@historia.Id" />
+                <button type="submit" class="btn btn-primary">Comenzar lectura</button>
+            </form>
+        </div>
+    </article>
+}

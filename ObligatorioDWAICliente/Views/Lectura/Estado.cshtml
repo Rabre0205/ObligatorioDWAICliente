@@ -1,0 +1,32 @@
+@model EstadoLecturaModel
+
+@{
+    ViewData["Title"] = Model.TituloHistoria;
+}
+
+<h1>@Model.TituloHistoria</h1>
+
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}
+
+<article class="capitulo-lectura border rounded p-3 mb-3">
+    <h2>@Model.CapituloActual.Titulo</h2>
+    <p>@Model.CapituloActual.Contenido</p>
+</article>
+
+@if (Model.CapituloActual.EsFinal)
+{
+    <p>Final alcanzado: @(Model.TituloFinalAlcanzado ?? Model.CapituloActual.Titulo).</p>
+    <a asp-action="Index" class="btn btn-primary">Volver a historias</a>
+}
+else
+{
+    <form asp-action="Avanzar" asp-route-id="@Model.Id" method="post">
+        @foreach (var opcion in Model.CapituloActual.Opciones)
+        {
+            <button type="submit" name="opcionId" value="@opcion.Id" class="btn btn-primary mb-2">@opcion.TextoOpcion</button>
+        }
+    </form>
+}
